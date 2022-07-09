@@ -16,7 +16,11 @@ namespace app {
 DEF_APP_CALLBACKS
 #undef CALLBACK_PROPERTY
 
-void HandleMessage(void *message);
+void CallApplicationStart();
+void CallApplicationPause();
+void CallApplicationResume();
+void CallWindowResize(int w, int h);
+bool CallFrameUpdate();
 
 } // namespace app
 } // namespace core

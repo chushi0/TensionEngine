@@ -5,7 +5,7 @@
 namespace tension {
 namespace core {
 
-Platform TENSION_CORE_CALL GetCurrentPlatform() {
+Platform GetCurrentPlatform() {
 #if defined(PLATFORM_WINDOWS)
   return Platform::Windows;
 #else
@@ -13,7 +13,7 @@ Platform TENSION_CORE_CALL GetCurrentPlatform() {
 #endif
 }
 
-std::string TENSION_CORE_CALL GetCurrentPlatformString() {
+std::string GetCurrentPlatformString() {
 #if defined(PLATFORM_WINDOWS)
   return platform_windows::GetWindowsPlatformString();
 #else
@@ -21,7 +21,7 @@ std::string TENSION_CORE_CALL GetCurrentPlatformString() {
 #endif
 }
 
-uint64_t TENSION_CORE_CALL GetTimeElapsed() {
+uint64_t GetTimeElapsed() {
 #if defined(PLATFORM_WINDOWS)
   return platform_windows::GetTimeElapsed();
 #else
@@ -43,13 +43,13 @@ int PlatformLooperRun() {
 #endif
 }
 
-void PlatformDispatchMessage(void *message) {
+void SetWindowsConfig(WindowsConfig *config) {
 #if defined(PLATFORM_WINDOWS)
-  platform_windows::WindowsDispatchMessage(message);
+  platform_windows::SetWindowsConfig(config);
 #endif
 }
 
-void TENSION_CORE_CALL Sleep(uint64_t time) {
+void Sleep(uint64_t time) {
 #if defined(PLATFORM_WINDOWS)
   platform_windows::Sleep(time);
 #endif

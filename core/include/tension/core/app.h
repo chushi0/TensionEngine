@@ -31,15 +31,5 @@ SetWindowResizeCallback(WindowResize func);
 TENSION_CORE_FUNC void TENSION_CORE_CALL
 SetFrameUpdateCallback(FrameUpdate func);
 
-// 消息结构
-struct Message {
-  void (*handler)(void *);
-  void *data;
-};
-// 向消息循环发送消息
-// 通过 new 在堆上创建 Message
-// 处理完成后将会自动调用 delete 释放空间
-void DispatchMessage(Message *message);
-
 } // namespace core
 } // namespace tension

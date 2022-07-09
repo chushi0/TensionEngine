@@ -12,52 +12,62 @@ static char **argv;
 DEF_APP_CALLBACKS
 #undef CALLBACK_PROPERTY
 
-static uint64_t lastFrameTime;
-
-static void LoopHandler(void *) {
-  uint64_t currentFrameTime = GetTimeElapsed();
-  uint64_t delta = currentFrameTime - lastFrameTime;
-  if (1000 / 60 > delta) {
-    Sleep(1000 / 60 - delta);
+void CallApplicationStart() {
+  if (ApplicationStartCallback) {
+    ApplicationStartCallback();
   }
-  currentFrameTime = GetTimeElapsed();
-  if (FrameUpdateCallback) {
-    FrameUpdateCallback((currentFrameTime - lastFrameTime) / 1000.f);
-  }
-  lastFrameTime = currentFrameTime;
-
-  auto msg = new Message;
-  msg->handler = app::LoopHandler;
-  DispatchMessage(msg);
 }
 
-void HandleMessage(void *message) {
-  auto msg = (Message *)message;
-  msg->handler(msg->data);
-  delete msg;
+void CallApplicationPause() {
+  if (ApplicationPauseCallback) {
+    ApplicationPauseCallback();
+  }
+}
+
+void CallApplicationResume() {
+  if (ApplicationResumeCallback) {
+    ApplicationResumeCallback();
+  }
+}
+
+void CallWindowResize(int w, int h) {
+  static int oldWidth = w;
+  static int oldHeight = h;
+  if (WindowResizeCallback) {
+    WindowResizeCallback(oldWidth, oldHeight, w, h);
+  }
+  oldWidth = w;
+  oldHeight = h;
+}
+
+bool CallFrameUpdate() {
+  static uint64_t lastUpdateTime = 0;
+  uint64_t currentUpdateTime = GetTimeElapsed();
+  if (currentUpdateTime - lastUpdateTime < 1000 / 60) {
+    return false;
+  }
+  float delta = (currentUpdateTime - lastUpdateTime) / 1000.f;
+  lastUpdateTime = currentUpdateTime;
+  if (FrameUpdateCallback) {
+    FrameUpdateCallback(delta);
+    return true;
+  }
+  return false;
 }
 
 } // namespace app
 
-int TENSION_CORE_CALL Exec(int argc, char **argv) {
+int Exec(int argc, char **argv) {
   app::argc = argc;
   app::argv = argv;
   PlatformInit();
-  if (app::ApplicationStartCallback) {
-    app::ApplicationStartCallback();
-  }
-  auto msg = new Message;
-  msg->handler = app::LoopHandler;
-  DispatchMessage(msg);
   return PlatformLooperRun();
 }
 
 #define CALLBACK_PROPERTY(T)                                                   \
-  void TENSION_CORE_CALL Set##T##Callback(T func) { app::T##Callback = func; }
+  void Set##T##Callback(T func) { app::T##Callback = func; }
 DEF_APP_CALLBACKS
 #undef CALLBACK_PROPERTY
-
-void DispatchMessage(Message *message) { PlatformDispatchMessage(message); }
 
 } // namespace core
 } // namespace tension

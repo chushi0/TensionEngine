@@ -94,4 +94,4 @@ cmake --install . --prefix=../output
 之后，在 output 文件夹中将得到一个应用程序文件。双击打开即可得到这样的界面：
 ![Hello Tension](images/QuickStart-HelloTension.png)
 
-> 如果您选择使用动态库，那么您可能需要将 TensionCore.dll 复制到同一文件夹中。
+> 如果您选择使用动态库，那么您可能需要将 dll 文件复制到同一文件夹中。
